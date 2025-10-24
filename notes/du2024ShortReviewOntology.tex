@@ -1,0 +1,155 @@
+\documentclass[a4paper,colorinlistoftodos]{article}
+\input{preamble}
+\input{hide}
+
+% \author{Upal Bhattacharya}
+\date{}
+\title{Notes for ``A Short Review for Ontology Learning: Stride to Large Language Models Trend''}
+\begin{document}
+
+\maketitle
+
+\begingroup
+    \hypersetup{linkcolor=black}
+    \tableofcontents
+    \pagebreak
+\endgroup
+
+\linenumbers
+
+\section{Summary}
+\label{sec:summary}
+
+The review paper provides an outline of ontology learning (OL) approaches with an
+emphasis on how LLMs are applied for OL. It outlines the advantages and
+disadvantages of shallow and deep learning approaches to expound the benefits
+of using large pre-trained LLMs that appear to possess superior linguistic
+understanding but fail to outline the main disadvantage of LLMs: their
+stochastic nature (despite available parameters to facilitate deterministic
+behaviour) and the inability to `re-train' to correct for errors or, simply:
+the reliance on `prompts' which significantly reduces the level of control
+available.
+
+It attempts to map various OL tasks to their equivalent NLP methods
+but is inconsistent in this endeavour, often providing only a short list of
+references without trying to create method-based categorizations. This is most
+evident in the sections outlining LLM-based approaches for concept formation
+and relationship extraction. The concept formation section can largely be
+summarized as `trying different prompting approaches' with the latter
+(relation extraction) being given more attention but without sufficient effort
+being put into creating meaningful categorizations. As a short review, the
+number of references for different method categorizations is insufficient.
+
+Overall, the review provides an idea of what kind of work is done for
+LLM-based ontology learning. The categorization using the ontology layer cake
+of concept formulation and relationship extraction is helpful but there is no
+attempt to categorize methodologies making it mostly a reference point for
+finding other method papers.
+
+\section{Brief Notes}
+\label{sec:brief}
+
+\begin{itemize}
+  \item Presents a brief (not-rigorous) overview of broad classification of
+    methods for ontolog learning, from shallow/manual methods, deep learning
+    strategies and `LLM' strateges.
+  \item Highlights the advantages and pitfalls of each broad stroke category
+    \begin{itemize}
+    \item \textbf{Shallow Methods}: \newline
+      \textit{Positives}: Easy to understand and implement \newline
+      \textit{Negatives}: Scalability, unable to handle complex relationships
+    \item \textbf{Deep Learning Methods}: \newline
+      \textit{Positives}: Better understanding of complex relationships \newline
+      \textit{Negatives}: Requires large amounts of annotated data for good
+      performance
+    \item \textbf{LLM Methods}:
+      \textit{Positives}: Superior understanding of semantics, context and
+      complex relationships \newline
+      \textit{Negatives}: N/A
+      \begin{negative}{Missing negatives for LLMs}{neg-1}
+        Does not highlight the negatives of LLMs: the inherent stochastic nature
+        or lack of precise control over outputs
+      \end{negative}
+    \end{itemize}
+  \item Categorizes OL methods as manual semi-automatic and
+    fully-automatic. Manual methods, despite their simplicity, can be used as
+    pre-cursor steps when using automatic methods. Semi-automatic methods,
+    with some degree of human intervention might be the most effective. List
+    of some semi-automatic frameworks: Text2Onto, OntoGen, OntoStudio
+  \item Based on the ontology-layer cake, classifies the main tasks for OL (in
+    order) as: \textbf{term extraction, synonym extraction, concept formation,
+      taxonomic relation extraction, non-taxonomic relation extraction} and
+    \textbf{axiom extraction}.
+  \item For the deep learning and LLM-based methods, focuses on the broader
+    classifications of \textbf{concept extraction} (which involves term
+    extraction, synonym extraction and concept formation) and
+    \textbf{relationship extraction} (which involves taxonomic and
+    non-taxonomic relation extraction)
+  \item Maps OL tasks to equivalent NLP tasks while highlighting relevant
+    literature:
+    \begin{itemize}
+      \item \textbf{Deep Learning Methods}
+       \begin{itemize}
+       \item \textit{Concept Formation}: Named-entity recognition (NER), part-of-speech
+         tagging (POS), Semantic Role Labelling, Distributed embedding similarity
+       \item \textit{Relationship Extraction}: ?
+        \begin{negative}{NLP-oriented classification of Relationship
+            Extraction}{neg-2}
+          Does not provide a clear categorization of NLP-specific tasks that map
+          into relationship extraction. Only provides different architectural implementations
+        \end{negative}
+      \end{itemize}
+    \item \textbf{LLM-based Methods}
+      \begin{itemize}
+        \item \textit{Concept Formation}: Natural language to OWL Funcational
+          Syntax conversion, various prompting methods, [MASK]-based prompting
+          for type prediction
+          \begin{negative}{Haphazard Categorization of LLM-based Concept
+              Formation for OL}{neg-3}
+            There is no clear categorization of LLM-based tasks for Concept
+            Formation. Highlights some approaches but not very thorough.
+          \end{negative}
+        \item \textit{Relation Extraction}:
+          \begin{itemize}
+          \item \textit{Hierarchical relation}: two-module methods for scoring
+            relations with tree maximization objective, zero and n-shot
+            prompting methods, layer-by-layer chained prompting, repeated
+            prompting, annotation generation
+            \begin{negative}{Lack of methodology categorizaton}{neg-4}
+              Provides a review of some available methods but makes no effort
+              to have categorization by methodology: e.g. prompting-focused
+              methods, support-system-based methods, etc.
+            \end{negative}
+
+          \item \textit{Non-hierarchical relation}:
+            \begin{positive}{Insufficient work on non-hierarchical
+                relation}{pos-1}
+              Acknowledges lack of sufficient work in non-hierarchical
+              relation extraction
+            \end{positive}
+          \end{itemize}
+        \end{itemize}
+     \end{itemize}
+   \item Future Directions: benchmarks, non-taxonomic relation extraction
+     \begin{positive}{LLM-oriented evaluation benchmarks}{pos-2}
+       Identifies that evaluation focusing on LLMs is a research gap. Aligns
+       with our own work.
+     \end{positive}
+  \end{itemize}
+
+\bibliographystyle{splncs04nat}
+\bibliography{bibliography}
+
+\pagebreak
+\nolinenumbers
+\appendix
+
+\begingroup
+    \hypersetup{linkcolor=black}
+    \listoftodos
+    \listofchanges
+    \pagebreak
+\endgroup
+
+\end{document}
+

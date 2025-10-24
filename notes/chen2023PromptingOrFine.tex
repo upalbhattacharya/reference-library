@@ -1,0 +1,168 @@
+\documentclass[a4paper,colorinlistoftodos]{article}
+\input{preamble}
+\input{hide}
+
+% \author{Upal Bhattacharya}
+\date{}
+\title{Notes for ``Prompting or Fine-tuning? A Comparative Study of
+ Large Language Models for Taxonomy Construction''}
+\begin{document}
+
+\maketitle
+
+\begingroup
+    \hypersetup{linkcolor=black}
+    \tableofcontents
+    \pagebreak
+\endgroup
+
+\linenumbers
+
+\section{Summary}
+\label{sec:summary}
+
+The paper presents a study to compare the performance of fine-tuned LLMs
+vs. prompting LLMs for structurally consistent taxonomy construction.
+Two datasets are constructed from popular data sources and, using various
+fine-tuning strategies (layer-wise, LoRA) and taxonomy construction objectives
+(MALI, MSA, MV), performance by prompting is found to be better than that
+obtained by fine-tuning. The study does not explore the generality of this
+claim by extending their study to include low-resource datasets
+e.g. CASE. While highlighting structurally consistent methods as one
+evaluation criteria, the analysis over strcutural consistency is entirely
+lacking. Further, more structurally inconsistent techniques (post-processing
+strategies) are used with only one structurally consistent method (fine-tuning
+using MSA). Structural consistency is therefore not explored well. The `best'
+performer, despite being mildly structurally inconsistent, is considered the
+best. This is confusing given the importance initially laid on structural
+consistency.
+
+The study highlights how prompting can provide better results than fine-tuning
+for taxonomy construction. However, it misses out on verifying this with
+low-resource datasets and creates confusion by emphasising structural
+consistency and then touting a mildly structurally inconsistent method as the
+better performer.
+
+\section{Brief Notes}
+\label{sec:brief-notes}
+
+\begin{itemize}
+\item Compares performance of fine-tuned models for taxonomy construction
+  vs. few-shot prompting using different maximization objectives for
+  constructing the final taxonomy to find prompting methods performing better.
+\item Uses a two-module system:
+  \begin{itemize}
+  \item \textbf{Relation Prediction}: Predicts relations (as scores) from  concept
+    pairs.
+  \item \textbf{Post-processing}: Uses scores and either a \textit{maximum likelihood}
+    objective (that does not conform to structural constraints) or a
+    \textit{maximum arborescence} objective (conforms to structural constraints)
+    to select a subgraph from the dense graph of all relations given by the
+    relation prediction module to construct a taxonomy.
+  \end{itemize}
+  \begin{definition}{Arborescence}{def:arborescence}
+    An arborescence is a directed graph where there exists a vertex $r$ (root)
+    such that, for any other vertex $v$, there is exactly one directed walk
+    from $r$ to $v$.
+  \end{definition}
+\end{itemize}
+
+\subsection{Methodology}
+\label{subsec:methodology}
+
+\begin{itemize}
+\item \textbf{Dataset}: Compares fine-tuning vs. prompting performance on a
+  medium-sized variant of WordNet and a new split-up variant of ACM CCS. 13
+  original taxonomies of the ACM CCS are split up into 75 sub-taxonomies to
+  account for the size imbalance in the original taxonomies by splitting at
+  level 1 of the taxonomy trees and accounting for duplication removal (144).
+  Datasets constructed using a 70-20-10 split including all positive relation
+  concept pairs and randomly selected negative pairs from each concept.
+  \begin{caution}{Artificial splitting of ACM CCS}{caut-1}
+    Artificially splitting the taxonomy deviates from evaluation over
+    realistic conditions. Real taxonomies are varied in size and
+    structure. The sub-taxonomies created from the split may be varied in
+    size as well but some homogenizing factor (at least 70 terms?) and the
+    lack of reported structural differences in the new sub-trees makes it
+    difficult to assess performance variability over structural differences.
+  \end{caution}
+  \begin{positive}{Difficulty in structural difference-based
+      analysis}{pos-1}
+    The omission of structural metrics of the hyponym taxonomy and of the
+    newly constructed ACM CCS taxonomy suggests that it may not be simple to
+    reason over differences in performance arising from structure. This is
+    similar to the lack of depth in structural variation analysis in our
+    first research study.
+  \end{positive}
+\item \textbf{Fine-tuning Setup}: GPT-Neo trained using layer-wise or LoRA
+  using post-processing objectives (MALI, MSA) and a pairwise classification
+  task. For a concept pair $(A, B)$, a sentence template: \newline
+  \verb|I am doing the taxonomy research, I think A is a subtopic of B| is
+  used to create the input to the model for fine-tuning.
+\item \textbf{Prompting Setup}: GPT-3.5-turbo is prompted to generate all
+  possible relations along with scores using a single prompt. A singular
+  prompt with all concept labels and randomly selected illustrative examples
+  of ENTIRE TAXONOMIES (5 for WordNet; 3 for ACM CCS) is given with the
+  objective of generating all possible relations and their
+  scores(?). Randomness is accounted for by mutiple repetitions and using a
+  \textbf{majority voting post-processing} objective to obtain the final
+  taxonomy (does not respect structural constraints)
+\item \textbf{Performance Comparison}: For the fine-tuning approaches,
+  compared over layer-wise vs. LoRA and MALI vs. MSA. Prompting methods
+  compared over Best vs majority voting. Evaluated over Precision, Recall and
+  F1.
+\end{itemize}
+\subsection{Results}
+\label{subsec:results}
+
+\begin{itemize}
+\item Comparing with the ground truth, prompting approaches outperform the
+  fine-tuning methods. Although slightly structurally inconsistent, they are
+  still pretty good. Only MSA fine-tuning methods are structurally consistent.
+
+  \begin{negative}{Relevance of structural consistency}{neg-1}
+    The paper considers structural consistency important but never gets into
+    what structural inconsistencies are generated by the prompting and
+    MALI-based approaches. While the prompting methods appear almost
+    strcuturally consistent (by the metrics they highligh in Table II), it is
+    difficult to understand the relevance of this without further analysis.
+  \end{negative}
+\item Acknowledges that present approach relies on semantic meaningfulness of
+  concept labels and the alignment of their semantics with the semantics of
+  tokens as learnt by LLMs.
+  \begin{negative}{Promting vs. fine-tuning on low-resource datasets}{neg-2}
+    The contributions of the paper suggest a general statement that prompting
+    can outperform fine-tuning strategies for taxonomy construction. However,
+    the considered taxonomies are surely very well understood by the LLMs from
+    their pre-training data. Hyponym classification is basically trained from
+    all English resources while ACM CCS is undoubtedly in the training
+    corpus. As a result, the generality of the statement is incorrect. The
+    prompting methods outperforming fine-tuning relies on the implicit
+    knowledge they already possess of these entities wherein, it is possible
+    that the fine-tuning strategies actually causes GPT-Neo to unlearn
+    this. Evaluation over low-resource datasets alongside `popular' data
+    sources would provide a better overview of performance.
+    
+
+\end{negative}
+
+
+\end{itemize}
+
+
+\bibliographystyle{splncs04nat}
+\bibliography{bibliography}
+
+\pagebreak
+\nolinenumbers
+\appendix
+
+\begingroup
+    \hypersetup{linkcolor=black}
+    \listoftodos
+    \listofchanges
+    \pagebreak
+\endgroup
+
+\end{document}
+
