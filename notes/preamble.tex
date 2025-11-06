@@ -8,8 +8,11 @@
 \usepackage[displaymath,mathlines,running]{lineno}
 
 %%%%%%%%%% Referencing %%%%%%%%%%
-% \usepackage[numbers,sort&compress]{natbib}
-\usepackage{biblatex}
+\usepackage[
+backend=biber,
+style=ieee,
+sorting=ynt
+]{biblatex}
 \addbibresource{../bibliography.bib}
 
 %%%%%%%%%% Images %%%%%%%%%%
